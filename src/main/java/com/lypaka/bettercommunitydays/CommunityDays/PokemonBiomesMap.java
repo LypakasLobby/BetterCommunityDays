@@ -36,9 +36,9 @@ public class PokemonBiomesMap {
                             for (ResourceLocation rl : sip.condition.biomes) {
 
                                 List<Integer> dexNumbers = new ArrayList<>();
-                                if (pokemonBiomesMap.containsKey(rl.getNamespace())) {
+                                if (pokemonBiomesMap.containsKey(rl.toString())) {
 
-                                    dexNumbers = pokemonBiomesMap.get(rl.getNamespace());
+                                    dexNumbers = pokemonBiomesMap.get(rl.toString());
 
                                 }
                                 if (!dexNumbers.contains(species.getDex())) {
@@ -46,7 +46,7 @@ public class PokemonBiomesMap {
                                     dexNumbers.add(species.getDex());
 
                                 }
-                                pokemonBiomesMap.put(rl.getNamespace(), dexNumbers);
+                                pokemonBiomesMap.put(rl.toString(), dexNumbers);
 
                             }
 

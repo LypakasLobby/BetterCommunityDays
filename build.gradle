@@ -10,7 +10,7 @@ group = mod_group_id
 version = mod_version
 
 base {
-    archivesName = 'CommunityDays-1.16.5'
+    archivesName = 'BetterCommunityDays-1.16.5'
 }
 
 java {

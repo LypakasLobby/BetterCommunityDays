@@ -1,10 +1,15 @@
 package com.lypaka.bettercommunitydays.CommunityDays;
 
+import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
+import com.pixelmonmod.pixelmon.api.pokemon.PokemonBuilder;
+import com.pixelmonmod.pixelmon.api.pokemon.species.Species;
+
 import java.util.List;
 import java.util.Map;
 
 public class CommunityDay {
 
+    private final String name;
     private final int endDay;
     private final int endHour;
     private final int endMinute;
@@ -27,11 +32,15 @@ public class CommunityDay {
     private final int specialMoveAmount;
     private final Map<String, Double> specialTextures;
 
-    public CommunityDay (int endDay, int endHour, int endMinute, int endMonth, int startDay, int startHour, int startMinute, int startMonth,
+    private boolean active;
+    private final Pokemon pokemonSpecies;
+
+    public CommunityDay (String name, int endDay, int endHour, int endMinute, int endMonth, int startDay, int startHour, int startMinute, int startMonth,
                          String guiDisplayName, List<String> guiLore, String guiRepresentationSpecies,
                          String form, int maxLevel, int minLevel, Map<String, Double> specialMoves, double shinyChance, String species, int specialMoveAmount, Map<String, Double> specialTextures
                          ) {
 
+        this.name = name;
         this.endDay = endDay;
         this.endHour = endHour;
         this.endMinute = endMinute;
@@ -51,6 +60,14 @@ public class CommunityDay {
         this.species = species;
         this.specialMoveAmount = specialMoveAmount;
         this.specialTextures = specialTextures;
+        this.active = false;
+        this.pokemonSpecies = PokemonBuilder.builder().species(this.species).build();
+
+    }
+
+    public String getName() {
+
+        return this.name;
 
     }
 
@@ -165,6 +182,24 @@ public class CommunityDay {
     public Map<String, Double> getSpecialTextures() {
 
         return this.specialTextures;
+
+    }
+
+    public boolean isActive() {
+
+        return this.active;
+
+    }
+
+    public void setActive (boolean active) {
+
+        this.active = active;
+
+    }
+
+    public int getPokemonDexNumber() {
+
+        return this.pokemonSpecies.getSpecies().getDex();
 
     }
 
