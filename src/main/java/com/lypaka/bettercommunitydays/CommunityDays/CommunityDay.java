@@ -10,14 +10,9 @@ import java.util.Map;
 public class CommunityDay {
 
     private final String name;
-    private final int endDay;
-    private final int endHour;
-    private final int endMinute;
-    private final int endMonth;
-    private final int startDay;
-    private final int startHour;
-    private final int startMinute;
-    private final int startMonth;
+    private final boolean configured;
+    private final int[] endTime;
+    private final int[] startTime;
 
     private final String guiDisplayName;
     private final List<String> guiLore;
@@ -36,21 +31,15 @@ public class CommunityDay {
     private boolean active;
     private final Pokemon pokemonSpecies;
 
-    public CommunityDay (String name, int endDay, int endHour, int endMinute, int endMonth, int startDay, int startHour, int startMinute, int startMonth,
-                         String guiDisplayName, List<String> guiLore, String guiRepresentationSpecies,
+    public CommunityDay (String name, boolean configured, int[] endTime, int[] startTime, String guiDisplayName, List<String> guiLore, String guiRepresentationSpecies,
                          String form, int maxLevel, int minLevel, Map<String, Double> specialMoves, double shinyChance, String species, int specialMoveAmount, Map<String, Double> specialTextures,
                          List<String> worldBlacklist
                          ) {
 
         this.name = name;
-        this.endDay = endDay;
-        this.endHour = endHour;
-        this.endMinute = endMinute;
-        this.endMonth = endMonth;
-        this.startDay = startDay;
-        this.startHour = startHour;
-        this.startMinute = startMinute;
-        this.startMonth = startMonth;
+        this.configured = configured;
+        this.endTime = endTime;
+        this.startTime = startTime;
         this.guiDisplayName = guiDisplayName;
         this.guiLore = guiLore;
         this.guiRepresentationSpecies = guiRepresentationSpecies;
@@ -75,51 +64,81 @@ public class CommunityDay {
 
     }
 
-    public int getEndDay() {
+    public boolean isConfigured() {
 
-        return this.endDay;
-
-    }
-
-    public int getEndHour() {
-
-        return this.endHour;
+        return this.configured;
 
     }
 
-    public int getEndMinute() {
+    public int getEndYear() {
 
-        return this.endMinute;
+        return this.endTime[0];
 
     }
 
     public int getEndMonth() {
 
-        return this.endMonth;
+        return this.endTime[1];
 
     }
 
-    public int getStartDay() {
+    public int getEndDay() {
 
-        return this.startDay;
-
-    }
-
-    public int getStartHour() {
-
-        return this.startHour;
+        return this.endTime[2];
 
     }
 
-    public int getStartMinute() {
+    public int getEndHour() {
 
-        return this.startMinute;
+        return this.endTime[3];
+
+    }
+
+    public int getEndMinute() {
+
+        return this.endTime[4];
+
+    }
+
+    public int getEndSecond() {
+
+        return this.endTime[5];
+
+    }
+
+    public int getStartYear() {
+
+        return this.startTime[0];
 
     }
 
     public int getStartMonth() {
 
-        return this.startMonth;
+        return this.startTime[1];
+
+    }
+
+    public int getStartDay() {
+
+        return this.startTime[2];
+
+    }
+
+    public int getStartHour() {
+
+        return this.startTime[3];
+
+    }
+
+    public int getStartMinute() {
+
+        return this.startTime[4];
+
+    }
+
+    public int getStartSecond() {
+
+        return this.startTime[5];
 
     }
 

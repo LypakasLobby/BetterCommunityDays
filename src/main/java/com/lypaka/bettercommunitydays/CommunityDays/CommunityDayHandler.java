@@ -159,14 +159,21 @@ public class CommunityDayHandler {
         for (int i = 0; i < ConfigGetters.communityDays.size(); i++) {
 
             String name = ConfigGetters.communityDays.get(i).replace(".conf", "");
-            int endDay = BetterCommunityDays.communityDayManager.getConfigNode(i, "Event-Data", "End-Day").getInt();
-            int endHour = BetterCommunityDays.communityDayManager.getConfigNode(i, "Event-Data", "End-Hour").getInt();
-            int endMinute = BetterCommunityDays.communityDayManager.getConfigNode(i, "Event-Data", "End-Minute").getInt();
-            int endMonth = BetterCommunityDays.communityDayManager.getConfigNode(i, "Event-Data", "End-Month").getInt();
-            int startDay = BetterCommunityDays.communityDayManager.getConfigNode(i, "Event-Data", "Start-Day").getInt();
-            int startHour = BetterCommunityDays.communityDayManager.getConfigNode(i, "Event-Data", "Start-Hour").getInt();
-            int startMinute = BetterCommunityDays.communityDayManager.getConfigNode(i, "Event-Data", "Start-Minute").getInt();
-            int startMonth = BetterCommunityDays.communityDayManager.getConfigNode(i, "Event-Data", "Start-Month").getInt();
+            boolean configured = BetterCommunityDays.communityDayManager.getConfigNode(i, "Event-Data", "Configured").getBoolean();
+            String[] end = BetterCommunityDays.communityDayManager.getConfigNode(i, "Event-Data", "End-Time").getString().split(", ");
+            int[] endTime = new int[end.length];
+            for (int e = 0; e < end.length; e++) {
+
+                endTime[e] = Integer.parseInt(end[e]);
+
+            }
+            String[] start = BetterCommunityDays.communityDayManager.getConfigNode(i, "Event-Data", "Start-Time").getString().split(", ");
+            int[] startTime = new int[start.length];
+            for (int s = 0; s < start.length; s++) {
+
+                startTime[s] = Integer.parseInt(start[s]);
+
+            }
 
             String guiDisplayName = BetterCommunityDays.communityDayManager.getConfigNode(i, "GUI-Data", "Display-Name").getString();
             List<String> guiLore = BetterCommunityDays.communityDayManager.getConfigNode(i, "GUI-Data", "Lore").getList(TypeToken.of(String.class));
@@ -182,7 +189,7 @@ public class CommunityDayHandler {
             Map<String, Double> specialTextures = BetterCommunityDays.communityDayManager.getConfigNode(i, "Pokemon-Data", "Textures").getValue(new TypeToken<Map<String, Double>>() {});
             List<String> worldBlacklist = BetterCommunityDays.communityDayManager.getConfigNode(i, "World-Blacklist").getList(TypeToken.of(String.class));
 
-            CommunityDay communityDay = new CommunityDay(name, endDay, endHour, endMinute, endMonth, startDay, startHour, startMinute, startMonth, guiDisplayName, guiLore, guiRepresentationSpecies,
+            CommunityDay communityDay = new CommunityDay(name, configured, endTime, startTime, guiDisplayName, guiLore, guiRepresentationSpecies,
                     form, maxLevel, minLevel, specialMoves, shinyChance, species, specialMoveAmount, specialTextures, worldBlacklist);
 
             communityDayMap.put(name, communityDay);

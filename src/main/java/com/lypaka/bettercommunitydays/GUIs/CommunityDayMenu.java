@@ -9,6 +9,7 @@ import com.lypaka.bettercommunitydays.CommunityDays.CommunityDayHandler;
 import com.lypaka.bettercommunitydays.ConfigGetters;
 import com.lypaka.lypakautils.FancyText;
 import com.lypaka.lypakautils.MiscHandlers.ItemStackBuilder;
+import com.lypaka.lypakautils.MiscHandlers.TimerDisplayBuilder;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.pokemon.PokemonBuilder;
 import com.pixelmonmod.pixelmon.api.util.helpers.SpriteItemHelper;
@@ -18,6 +19,7 @@ import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.StringNBT;
 import net.minecraft.util.text.ITextComponent;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -63,6 +65,13 @@ public class CommunityDayMenu {
 
             try {
 
+                int endYear = day.getEndYear();
+                int endMonth = day.getEndMonth();
+                int endDay = day.getEndDay();
+                int endHour = day.getEndHour();
+                int endMinute = day.getEndMinute();
+                int endSecond = day.getEndSecond();
+                LocalDateTime end = LocalDateTime.of(endYear, endMonth, endDay, endHour, endMinute, endSecond);
                 String representDisplayName = day.getGUIDisplayNam();
                 String representationSpecies = day.getGUIRepresentationSpecies();
                 String pokemonSpecies;
@@ -89,7 +98,9 @@ public class CommunityDayMenu {
                 ListNBT lore = new ListNBT();
                 for (String s : list) {
 
-                    lore.add(StringNBT.valueOf(ITextComponent.Serializer.toJson(FancyText.getFormattedText(s))));
+                    lore.add(StringNBT.valueOf(ITextComponent.Serializer.toJson(FancyText.getFormattedText(
+                            s.replace("%time%", TimerDisplayBuilder.makeTimeReadable(end))
+                    ))));
 
                 }
                 itemStack.getOrCreateTagElement("display").put("Lore", lore);

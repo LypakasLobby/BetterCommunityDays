@@ -18,39 +18,45 @@ public class CommunityDayTimer {
             public void run() {
 
                 LocalDateTime now = LocalDateTime.now();
-                int nowDay = now.getDayOfMonth();
-                int nowMonth = now.getMonthValue();
-                int nowHour = now.getHour();
-                int nowMinute = now.getMinute();
+                //LocalDateTime.of(int year, int month, int dayOfMonth, int hour, int minute, int second)
 
                 for (Map.Entry<String, CommunityDay> entry : CommunityDayHandler.communityDayMap.entrySet()) {
 
                     CommunityDay communityDay = entry.getValue();
+                    int endYear = communityDay.getEndYear();
+                    int endMonth = communityDay.getEndMonth();
                     int endDay = communityDay.getEndDay();
                     int endHour = communityDay.getEndHour();
                     int endMinute = communityDay.getEndMinute();
-                    int endMonth = communityDay.getEndMonth();
+                    int endSecond = communityDay.getEndSecond();
+                    int startYear = communityDay.getStartYear();
+                    int startMonth = communityDay.getStartMonth();
                     int startDay = communityDay.getStartDay();
                     int startHour = communityDay.getStartHour();
                     int startMinute = communityDay.getStartMinute();
-                    int startMonth = communityDay.getStartMonth();
-                    if (!communityDay.isActive()) {
+                    int startSecond = communityDay.getStartSecond();
 
-                        if (nowMonth >= startMonth && nowMonth <= endMonth) {
+                    LocalDateTime start = LocalDateTime.of(startYear, startMonth, startDay, startHour, startMinute, startSecond);
+                    LocalDateTime end = LocalDateTime.of(endYear, endMonth, endDay, endHour, endMinute, endSecond);
+                    if (communityDay.isConfigured()) {
 
-                            if (nowDay >= startDay && nowDay <= endDay) {
+                        if (!communityDay.isActive()) {
 
-                                if (nowHour >= startHour && nowHour <= endHour) {
+                            if (now.isAfter(start) && now.isBefore(end)) {
 
-                                    if (nowMinute >= startMinute && nowMinute <= endMinute) {
+                                communityDay.setActive(true);
+                                BetterCommunityDays.logger.info("Activating Community Day: " + entry.getKey());
+                                CommunityDayHandler.activeCommunityDays.add(communityDay);
 
-                                        communityDay.setActive(true);
-                                        BetterCommunityDays.logger.info("Activating Community Day: " + entry.getKey());
-                                        CommunityDayHandler.activeCommunityDays.add(communityDay);
+                            }
 
-                                    }
+                        } else {
 
-                                }
+                            if (now.isAfter(end)) {
+
+                                communityDay.setActive(false);
+                                CommunityDayHandler.activeCommunityDays.removeIf(e -> e.getName().equalsIgnoreCase(entry.getKey()));
+                                BetterCommunityDays.logger.info("Deactivating Community Day: " + entry.getKey());
 
                             }
 
@@ -58,23 +64,11 @@ public class CommunityDayTimer {
 
                     } else {
 
-                        if (nowMonth >= endMonth) {
+                        if (communityDay.isActive()) {
 
-                            if (nowDay >= endDay) {
-
-                                if (nowHour >= endHour) {
-
-                                    if (nowMinute >= endMinute) {
-
-                                        communityDay.setActive(false);
-                                        CommunityDayHandler.activeCommunityDays.removeIf(e -> e.getName().equalsIgnoreCase(entry.getKey()));
-                                        BetterCommunityDays.logger.info("Deactivating Community Day: " + entry.getKey());
-
-                                    }
-
-                                }
-
-                            }
+                            communityDay.setActive(false);
+                            CommunityDayHandler.activeCommunityDays.removeIf(e -> e.getName().equalsIgnoreCase(entry.getKey()));
+                            BetterCommunityDays.logger.info("Deactivating Community Day: " + entry.getKey());
 
                         }
 
