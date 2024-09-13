@@ -31,13 +31,15 @@ public class CommunityDay {
     private final String species;
     private final int specialMoveAmount;
     private final Map<String, Double> specialTextures;
+    private final List<String> worldBlacklist;
 
     private boolean active;
     private final Pokemon pokemonSpecies;
 
     public CommunityDay (String name, int endDay, int endHour, int endMinute, int endMonth, int startDay, int startHour, int startMinute, int startMonth,
                          String guiDisplayName, List<String> guiLore, String guiRepresentationSpecies,
-                         String form, int maxLevel, int minLevel, Map<String, Double> specialMoves, double shinyChance, String species, int specialMoveAmount, Map<String, Double> specialTextures
+                         String form, int maxLevel, int minLevel, Map<String, Double> specialMoves, double shinyChance, String species, int specialMoveAmount, Map<String, Double> specialTextures,
+                         List<String> worldBlacklist
                          ) {
 
         this.name = name;
@@ -60,6 +62,8 @@ public class CommunityDay {
         this.species = species;
         this.specialMoveAmount = specialMoveAmount;
         this.specialTextures = specialTextures;
+        this.worldBlacklist = worldBlacklist;
+
         this.active = false;
         this.pokemonSpecies = PokemonBuilder.builder().species(this.species).build();
 
@@ -182,6 +186,12 @@ public class CommunityDay {
     public Map<String, Double> getSpecialTextures() {
 
         return this.specialTextures;
+
+    }
+
+    public List<String> getWorldBlacklist() {
+
+        return this.worldBlacklist;
 
     }
 

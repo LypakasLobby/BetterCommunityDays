@@ -3,6 +3,7 @@ package com.lypaka.bettercommunitydays.Listeners;
 import com.lypaka.bettercommunitydays.CommunityDays.CommunityDay;
 import com.lypaka.bettercommunitydays.CommunityDays.CommunityDayHandler;
 import com.lypaka.bettercommunitydays.ConfigGetters;
+import com.lypaka.lypakautils.WorldStuff.WorldMap;
 import com.pixelmonmod.pixelmon.api.events.spawning.SpawnEvent;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.util.helpers.RandomHelper;
@@ -25,10 +26,11 @@ public class PixelmonSpawnListener {
 
             if (event.spawner instanceof PlayerTrackingSpawner) {
 
-                PixelmonEntity pixelmon = (PixelmonEntity) event.action.getOrCreateEntity();
                 ServerPlayerEntity player = ((PlayerTrackingSpawner) event.spawner).getTrackedPlayer();
+                if (player == null) return;
+                String worldName = WorldMap.getWorldName(player);
                 String biome = player.level.getBiome(player.blockPosition()).getRegistryName().toString();
-                List<CommunityDay> communityDays = CommunityDayHandler.getCommunityDaysFromBiome(biome);
+                List<CommunityDay> communityDays = CommunityDayHandler.getCommunityDaysFromBiome(biome, worldName);
 
                 if (communityDays.size() == 0) return;
 

@@ -21,7 +21,7 @@ public class CommunityDayHandler {
     public static Map<String, CommunityDay> communityDayMap;
     public static List<CommunityDay> activeCommunityDays = new ArrayList<>();
 
-    public static List<CommunityDay> getCommunityDaysFromBiome (String biome) {
+    public static List<CommunityDay> getCommunityDaysFromBiome (String biome, String worldName) {
 
         List<CommunityDay> days = new ArrayList<>();
         if (!PokemonBiomesMap.pokemonBiomesMap.containsKey(biome)) return days;
@@ -29,9 +29,13 @@ public class CommunityDayHandler {
         List<Integer> dexNums = PokemonBiomesMap.pokemonBiomesMap.get(biome);
         for (CommunityDay day : activeCommunityDays) {
 
-            if (dexNums.contains(day.getPokemonDexNumber())) {
+            if (!day.getWorldBlacklist().contains(worldName)) {
 
-                if (!days.contains(day)) days.add(day);
+                if (dexNums.contains(day.getPokemonDexNumber())) {
+
+                    if (!days.contains(day)) days.add(day);
+
+                }
 
             }
 
@@ -176,9 +180,10 @@ public class CommunityDayHandler {
             String species = BetterCommunityDays.communityDayManager.getConfigNode(i, "Pokemon-Data", "Species").getString();
             int specialMoveAmount = BetterCommunityDays.communityDayManager.getConfigNode(i, "Pokemon-Data", "Special-Move-Amount").getInt();
             Map<String, Double> specialTextures = BetterCommunityDays.communityDayManager.getConfigNode(i, "Pokemon-Data", "Textures").getValue(new TypeToken<Map<String, Double>>() {});
+            List<String> worldBlacklist = BetterCommunityDays.communityDayManager.getConfigNode(i, "World-Blacklist").getList(TypeToken.of(String.class));
 
             CommunityDay communityDay = new CommunityDay(name, endDay, endHour, endMinute, endMonth, startDay, startHour, startMinute, startMonth, guiDisplayName, guiLore, guiRepresentationSpecies,
-                    form, maxLevel, minLevel, specialMoves, shinyChance, species, specialMoveAmount, specialTextures);
+                    form, maxLevel, minLevel, specialMoves, shinyChance, species, specialMoveAmount, specialTextures, worldBlacklist);
 
             communityDayMap.put(name, communityDay);
             BetterCommunityDays.logger.info("Successfully created and loaded Community Day: " + name);
