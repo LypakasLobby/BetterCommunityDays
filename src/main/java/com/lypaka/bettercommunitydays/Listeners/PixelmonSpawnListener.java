@@ -1,5 +1,6 @@
 package com.lypaka.bettercommunitydays.Listeners;
 
+import com.lypaka.bettercommunitydays.API.CommunityDaySpawnEvent;
 import com.lypaka.bettercommunitydays.CommunityDays.CommunityDay;
 import com.lypaka.bettercommunitydays.CommunityDays.CommunityDayHandler;
 import com.lypaka.bettercommunitydays.ConfigGetters;
@@ -10,6 +11,7 @@ import com.pixelmonmod.pixelmon.api.util.helpers.RandomHelper;
 import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
 import com.pixelmonmod.pixelmon.spawning.PlayerTrackingSpawner;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import java.util.List;
@@ -26,6 +28,7 @@ public class PixelmonSpawnListener {
 
             if (event.spawner instanceof PlayerTrackingSpawner) {
 
+                PixelmonEntity originalPixelmon = (PixelmonEntity) event.action.getOrCreateEntity();
                 ServerPlayerEntity player = ((PlayerTrackingSpawner) event.spawner).getTrackedPlayer();
                 if (player == null) return;
                 String worldName = WorldMap.getWorldName(player);
@@ -52,10 +55,21 @@ public class PixelmonSpawnListener {
                 event.setCanceled(true);
 
                 Pokemon pokemon = CommunityDayHandler.buildCommunityDaySpawn(day);
-                PixelmonEntity spawnedPixelmon = pokemon.getOrSpawnPixelmon(player.level, x, y, z);
-                spawnedPixelmon.setPos(x, y, z);
-                spawnedPixelmon.setSpawnLocation(spawnedPixelmon.getDefaultSpawnLocation());
-                spawnedPixelmon.setGlowing(true);
+                CommunityDaySpawnEvent cdse = new CommunityDaySpawnEvent(player, pokemon, originalPixelmon.getPokemon());
+                MinecraftForge.EVENT_BUS.post(cdse);
+                if (!cdse.isCanceled()) {
+
+                    cdse.getCommunityDaySpawn().getPersistentData().putBoolean("CommunityDaySpawn", true);
+                    PixelmonEntity spawnedPixelmon = cdse.getCommunityDaySpawn().getOrSpawnPixelmon(player.level, x, y, z);
+                    spawnedPixelmon.setPos(x, y, z);
+                    spawnedPixelmon.setSpawnLocation(spawnedPixelmon.getDefaultSpawnLocation());
+                    if (ConfigGetters.glowing) {
+
+                        spawnedPixelmon.setGlowing(true);
+
+                    }
+
+                }
 
             }
 

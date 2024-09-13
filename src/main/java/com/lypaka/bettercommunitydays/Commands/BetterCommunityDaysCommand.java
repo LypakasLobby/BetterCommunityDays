@@ -17,6 +17,7 @@ public class BetterCommunityDaysCommand {
     @SubscribeEvent
     public static void onCommandRegistration (RegisterCommandsEvent event) {
 
+        new MenuCommand(event.getDispatcher());
         new ReloadCommand(event.getDispatcher());
 
         ConfigCommand.register(event.getDispatcher());

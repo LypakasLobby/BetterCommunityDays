@@ -35,13 +35,11 @@ public class BetterCommunityDays {
     public static ComplexConfigManager communityDayManager;
 
     // TODO
-    // GUIs
     // API events
-    // Command to open GUI
 
     public BetterCommunityDays() throws ObjectMappingException {
 
-        String[] files = new String[]{"bettercommunitydays.conf"};
+        String[] files = new String[]{"bettercommunitydays.conf", "gui.conf"};
         Path dir = ConfigUtils.checkDir(Paths.get("./config/bettercommunitydays"));
         configManager = new BasicConfigManager(files, dir, BetterCommunityDays.class, MOD_NAME, MOD_ID, logger);
         configManager.init();

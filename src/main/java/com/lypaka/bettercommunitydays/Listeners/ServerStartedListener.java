@@ -17,6 +17,8 @@ public class ServerStartedListener {
     public static void onServerStarted (FMLServerStartedEvent event) throws ObjectMappingException {
 
         Pixelmon.EVENT_BUS.register(new PixelmonSpawnListener());
+        Pixelmon.EVENT_BUS.register(new CaptureListener());
+
         PokemonBiomesMap.load();
         CommunityDayHandler.loadCommunityDays();
         CommunityDayTimer.startTimer();
