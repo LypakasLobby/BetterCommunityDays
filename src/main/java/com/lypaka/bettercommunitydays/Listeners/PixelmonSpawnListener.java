@@ -22,8 +22,6 @@ public class PixelmonSpawnListener {
     public void onSpawn (SpawnEvent event) {
 
         if (CommunityDayHandler.activeCommunityDays.size() == 0) return;
-        if (!RandomHelper.getRandomChance(ConfigGetters.spawnChance)) return;
-
         if (event.action.getOrCreateEntity() instanceof PixelmonEntity) {
 
             if (event.spawner instanceof PlayerTrackingSpawner) {
@@ -48,6 +46,7 @@ public class PixelmonSpawnListener {
 
                 }
 
+                if (!RandomHelper.getRandomChance(day.getSpawnChance())) return;
                 int x = event.action.spawnLocation.location.pos.getX();
                 int y = event.action.spawnLocation.location.pos.getY();
                 int z = event.action.spawnLocation.location.pos.getZ();

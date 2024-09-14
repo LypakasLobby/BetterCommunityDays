@@ -1,17 +1,30 @@
 package com.lypaka.bettercommunitydays.CommunityDays;
 
 import com.lypaka.bettercommunitydays.BetterCommunityDays;
+import com.lypaka.bettercommunitydays.ConfigGetters;
+import com.lypaka.lypakautils.FancyText;
+import com.lypaka.lypakautils.Listeners.JoinListener;
+import net.minecraft.entity.player.ServerPlayerEntity;
 
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.UUID;
 
 public class CommunityDayTimer {
 
+    private static Timer timer;
+
     public static void startTimer() {
 
-        Timer timer = new Timer();
+        if (timer != null) {
+
+            timer.cancel();
+
+        }
+
+        timer = new Timer();
         timer.schedule(new TimerTask() {
 
             @Override
@@ -47,6 +60,12 @@ public class CommunityDayTimer {
                                 communityDay.setActive(true);
                                 BetterCommunityDays.logger.info("Activating Community Day: " + entry.getKey());
                                 CommunityDayHandler.activeCommunityDays.add(communityDay);
+                                for (Map.Entry<UUID, ServerPlayerEntity> e : JoinListener.playerMap.entrySet()) {
+
+                                    String message = ConfigGetters.broadcastStart;
+                                    e.getValue().sendMessage(FancyText.getFormattedText(message.replace("%pokemon%", communityDay.getSpecies())), e.getKey());
+
+                                }
 
                             }
 
@@ -57,6 +76,12 @@ public class CommunityDayTimer {
                                 communityDay.setActive(false);
                                 CommunityDayHandler.activeCommunityDays.removeIf(e -> e.getName().equalsIgnoreCase(entry.getKey()));
                                 BetterCommunityDays.logger.info("Deactivating Community Day: " + entry.getKey());
+                                for (Map.Entry<UUID, ServerPlayerEntity> e : JoinListener.playerMap.entrySet()) {
+
+                                    String message = ConfigGetters.broadcastEnd;
+                                    e.getValue().sendMessage(FancyText.getFormattedText(message.replace("%pokemon%", communityDay.getSpecies())), e.getKey());
+
+                                }
 
                             }
 

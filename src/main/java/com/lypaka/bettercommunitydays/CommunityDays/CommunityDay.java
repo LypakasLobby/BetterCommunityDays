@@ -23,6 +23,7 @@ public class CommunityDay {
     private final int minLevel;
     private final Map<String, Double> specialMoves;
     private final double shinyChance;
+    private final double spawnChance;
     private final String species;
     private final int specialMoveAmount;
     private final Map<String, Double> specialTextures;
@@ -32,7 +33,7 @@ public class CommunityDay {
     private final Pokemon pokemonSpecies;
 
     public CommunityDay (String name, boolean configured, int[] endTime, int[] startTime, String guiDisplayName, List<String> guiLore, String guiRepresentationSpecies,
-                         String form, int maxLevel, int minLevel, Map<String, Double> specialMoves, double shinyChance, String species, int specialMoveAmount, Map<String, Double> specialTextures,
+                         String form, int maxLevel, int minLevel, Map<String, Double> specialMoves, double shinyChance, double spawnChance, String species, int specialMoveAmount, Map<String, Double> specialTextures,
                          List<String> worldBlacklist
                          ) {
 
@@ -48,6 +49,7 @@ public class CommunityDay {
         this.minLevel = minLevel;
         this.specialMoves = specialMoves;
         this.shinyChance = shinyChance;
+        this.spawnChance = spawnChance;
         this.species = species;
         this.specialMoveAmount = specialMoveAmount;
         this.specialTextures = specialTextures;
@@ -187,6 +189,12 @@ public class CommunityDay {
     public double getShinyChance() {
 
         return this.shinyChance;
+
+    }
+
+    public double getSpawnChance() {
+
+        return this.spawnChance;
 
     }
 
