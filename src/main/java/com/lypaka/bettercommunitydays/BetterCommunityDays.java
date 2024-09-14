@@ -34,9 +34,6 @@ public class BetterCommunityDays {
     public static BasicConfigManager configManager;
     public static ComplexConfigManager communityDayManager;
 
-    // TODO
-    // API events
-
     public BetterCommunityDays() throws ObjectMappingException {
 
         String[] files = new String[]{"bettercommunitydays.conf", "gui.conf"};
