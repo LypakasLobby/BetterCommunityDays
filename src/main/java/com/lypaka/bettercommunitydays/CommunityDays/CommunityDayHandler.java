@@ -19,7 +19,7 @@ import java.util.Map;
 public class CommunityDayHandler {
 
     public static Map<String, CommunityDay> communityDayMap;
-    public static List<CommunityDay> activeCommunityDays = new ArrayList<>();
+    public static Map<String, CommunityDay> activeCommunityDays = new HashMap<>();
 
     public static List<CommunityDay> getCommunityDaysFromBiome (String biome, String worldName) {
 
@@ -27,8 +27,9 @@ public class CommunityDayHandler {
         if (!PokemonBiomesMap.pokemonBiomesMap.containsKey(biome)) return days;
 
         List<Integer> dexNums = PokemonBiomesMap.pokemonBiomesMap.get(biome);
-        for (CommunityDay day : activeCommunityDays) {
+        for (Map.Entry<String, CommunityDay> entry : activeCommunityDays.entrySet()) {
 
+            CommunityDay day = entry.getValue();
             if (!day.getWorldBlacklist().contains(worldName)) {
 
                 if (dexNums.contains(day.getPokemonDexNumber())) {
@@ -155,6 +156,7 @@ public class CommunityDayHandler {
 
     public static void loadCommunityDays() throws ObjectMappingException {
 
+        activeCommunityDays = new HashMap<>();
         communityDayMap = new HashMap<>();
         for (int i = 0; i < ConfigGetters.communityDays.size(); i++) {
 
@@ -201,7 +203,7 @@ public class CommunityDayHandler {
             Map<String, Double> specialTextures = BetterCommunityDays.communityDayManager.getConfigNode(i, "Pokemon-Data", "Textures").getValue(new TypeToken<Map<String, Double>>() {});
             List<String> worldBlacklist = BetterCommunityDays.communityDayManager.getConfigNode(i, "World-Blacklist").getList(TypeToken.of(String.class));
 
-            CommunityDay communityDay = new CommunityDay(name, configured, endTime, startTime, guiDisplayName, guiLore, guiRepresentationSpecies,
+            CommunityDay communityDay = new CommunityDay(i, name, configured, endTime, startTime, guiDisplayName, guiLore, guiRepresentationSpecies,
                     form, maxLevel, minLevel, specialMoves, shinyChance, spawnChance, species, specialMoveAmount, specialTextures, worldBlacklist);
 
             communityDayMap.put(name, communityDay);

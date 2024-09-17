@@ -1,5 +1,6 @@
 package com.lypaka.bettercommunitydays.CommunityDays;
 
+import com.lypaka.bettercommunitydays.BetterCommunityDays;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.pokemon.PokemonBuilder;
 import com.pixelmonmod.pixelmon.api.pokemon.species.Species;
@@ -9,8 +10,9 @@ import java.util.Map;
 
 public class CommunityDay {
 
+    private final int index;
     private final String name;
-    private final boolean configured;
+    private boolean configured;
     private final int[] endTime;
     private final int[] startTime;
 
@@ -32,11 +34,12 @@ public class CommunityDay {
     private boolean active;
     private final Pokemon pokemonSpecies;
 
-    public CommunityDay (String name, boolean configured, int[] endTime, int[] startTime, String guiDisplayName, List<String> guiLore, String guiRepresentationSpecies,
+    public CommunityDay (int index, String name, boolean configured, int[] endTime, int[] startTime, String guiDisplayName, List<String> guiLore, String guiRepresentationSpecies,
                          String form, int maxLevel, int minLevel, Map<String, Double> specialMoves, double shinyChance, double spawnChance, String species, int specialMoveAmount, Map<String, Double> specialTextures,
                          List<String> worldBlacklist
                          ) {
 
+        this.index = index;
         this.name = name;
         this.configured = configured;
         this.endTime = endTime;
@@ -69,6 +72,20 @@ public class CommunityDay {
     public boolean isConfigured() {
 
         return this.configured;
+
+    }
+
+    public void setConfigured (boolean configured) {
+
+        this.configured = configured;
+        updatedConfigured();
+
+    }
+
+    private void updatedConfigured() {
+
+        BetterCommunityDays.communityDayManager.getConfigNode(this.index, "Event-Data", "Configured").setValue(this.configured);
+        BetterCommunityDays.communityDayManager.save();
 
     }
 

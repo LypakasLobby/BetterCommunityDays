@@ -61,8 +61,9 @@ public class CommunityDayMenu {
 
         }
         int index = 0;
-        for (CommunityDay day : CommunityDayHandler.activeCommunityDays) {
+        for (Map.Entry<String, CommunityDay> entry : CommunityDayHandler.activeCommunityDays.entrySet()) {
 
+            CommunityDay day = entry.getValue();
             try {
 
                 int endYear = day.getEndYear();

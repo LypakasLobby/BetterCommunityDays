@@ -10,6 +10,8 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
+import java.util.Map;
+
 @Mod.EventBusSubscriber(modid = BetterCommunityDays.MOD_ID)
 public class LoginListener {
 
@@ -17,9 +19,9 @@ public class LoginListener {
     public static void onJoin (PlayerEvent.PlayerLoggedInEvent event) {
 
         ServerPlayerEntity player = (ServerPlayerEntity) event.getPlayer();
-        for (CommunityDay day : CommunityDayHandler.activeCommunityDays) {
+        for (Map.Entry<String, CommunityDay> entry : CommunityDayHandler.activeCommunityDays.entrySet()) {
 
-            player.sendMessage(FancyText.getFormattedText(ConfigGetters.message.replace("%pokemon%", day.getSpecies())), player.getUUID());
+            player.sendMessage(FancyText.getFormattedText(ConfigGetters.message.replace("%pokemon%", entry.getValue().getSpecies())), player.getUUID());
 
         }
 

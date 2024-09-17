@@ -59,7 +59,7 @@ public class CommunityDayTimer {
 
                                 communityDay.setActive(true);
                                 BetterCommunityDays.logger.info("Activating Community Day: " + entry.getKey());
-                                CommunityDayHandler.activeCommunityDays.add(communityDay);
+                                CommunityDayHandler.activeCommunityDays.put(communityDay.getName(), communityDay);
                                 for (Map.Entry<UUID, ServerPlayerEntity> e : JoinListener.playerMap.entrySet()) {
 
                                     String message = ConfigGetters.broadcastStart;
@@ -74,7 +74,7 @@ public class CommunityDayTimer {
                             if (now.isAfter(end)) {
 
                                 communityDay.setActive(false);
-                                CommunityDayHandler.activeCommunityDays.removeIf(e -> e.getName().equalsIgnoreCase(entry.getKey()));
+                                CommunityDayHandler.activeCommunityDays.entrySet().removeIf(e -> e.getKey().equalsIgnoreCase(entry.getKey()));
                                 BetterCommunityDays.logger.info("Deactivating Community Day: " + entry.getKey());
                                 for (Map.Entry<UUID, ServerPlayerEntity> e : JoinListener.playerMap.entrySet()) {
 
@@ -92,7 +92,7 @@ public class CommunityDayTimer {
                         if (communityDay.isActive()) {
 
                             communityDay.setActive(false);
-                            CommunityDayHandler.activeCommunityDays.removeIf(e -> e.getName().equalsIgnoreCase(entry.getKey()));
+                            CommunityDayHandler.activeCommunityDays.entrySet().removeIf(e -> e.getKey().equalsIgnoreCase(entry.getKey()));
                             BetterCommunityDays.logger.info("Deactivating Community Day: " + entry.getKey());
 
                         }
