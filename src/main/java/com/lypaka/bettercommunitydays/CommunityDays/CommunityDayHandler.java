@@ -4,12 +4,14 @@ import com.google.common.reflect.TypeToken;
 import com.lypaka.bettercommunitydays.BetterCommunityDays;
 import com.lypaka.bettercommunitydays.ConfigGetters;
 import com.lypaka.lypakautils.MiscHandlers.PixelmonHelpers;
+import com.pixelmonmod.api.Flags;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.pokemon.PokemonBuilder;
 import com.pixelmonmod.pixelmon.api.pokemon.ability.AbilityRegistry;
 import com.pixelmonmod.pixelmon.api.util.helpers.RandomHelper;
 import com.pixelmonmod.pixelmon.battles.attacks.Attack;
 import com.pixelmonmod.pixelmon.battles.attacks.ImmutableAttack;
+import com.pixelmonmod.pixelmon.client.gui.starter.ChooseStarterScreen;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 
 import java.util.ArrayList;
@@ -167,6 +169,12 @@ public class CommunityDayHandler {
 
         }
 
+        if (!communityDay.getFlag().equalsIgnoreCase("")) {
+
+            pokemon.addFlag(communityDay.getFlag());
+
+        }
+
         return pokemon;
 
     }
@@ -223,6 +231,18 @@ public class CommunityDayHandler {
                 abilities = BetterCommunityDays.communityDayManager.getConfigNode(i, "Pokemon-Data", "Abilities").getValue(new TypeToken<Map<String, Double>>() {});
 
             }
+            String flag = "";
+            if (BetterCommunityDays.communityDayManager.getConfigNode(i, "Pokemon-Data", "Flag").isVirtual()) {
+
+                BetterCommunityDays.communityDayManager.getConfigNode(i, "Pokemon-Data", "Flag").setComment("Allows for setting a mark/flag on the Pokemon. To not set one, leave as \"\"");
+                BetterCommunityDays.communityDayManager.getConfigNode(i, "Pokemon-Data", "Flag").setValue("");
+                if (!needsSaving) needsSaving = true;
+
+            } else {
+
+                flag = BetterCommunityDays.communityDayManager.getConfigNode(i, "Pokemon-Data", "Flag").getString();
+
+            }
             String form = BetterCommunityDays.communityDayManager.getConfigNode(i, "Pokemon-Data", "Form").getString();
             double ivBoost = 0;
             if (BetterCommunityDays.communityDayManager.getConfigNode(i, "Pokemon-Data", "IV-Boost-Percentage").isVirtual()) {
@@ -257,7 +277,7 @@ public class CommunityDayHandler {
             List<String> worldBlacklist = BetterCommunityDays.communityDayManager.getConfigNode(i, "World-Blacklist").getList(TypeToken.of(String.class));
 
             CommunityDay communityDay = new CommunityDay(i, name, configured, endTime, startTime, guiDisplayName, guiLore, guiRepresentationSpecies, abilities,
-                    form, ivBoost, maxLevel, minLevel, specialMoves, shinyChance, spawnChance, species, specialMoveAmount, specialTextures, worldBlacklist);
+                    flag, form, ivBoost, maxLevel, minLevel, specialMoves, shinyChance, spawnChance, species, specialMoveAmount, specialTextures, worldBlacklist);
 
             communityDayMap.put(name, communityDay);
             BetterCommunityDays.logger.info("Successfully created and loaded Community Day: " + name);
