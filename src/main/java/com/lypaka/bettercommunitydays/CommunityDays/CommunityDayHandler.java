@@ -6,6 +6,7 @@ import com.lypaka.bettercommunitydays.ConfigGetters;
 import com.lypaka.lypakautils.MiscHandlers.PixelmonHelpers;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.pokemon.PokemonBuilder;
+import com.pixelmonmod.pixelmon.api.pokemon.ability.AbilityRegistry;
 import com.pixelmonmod.pixelmon.api.util.helpers.RandomHelper;
 import com.pixelmonmod.pixelmon.battles.attacks.Attack;
 import com.pixelmonmod.pixelmon.battles.attacks.ImmutableAttack;
@@ -149,6 +150,22 @@ public class CommunityDayHandler {
             }
 
         }
+        if (!communityDay.getAbilities().isEmpty()) {
+
+            for (Map.Entry<String, Double> entry : communityDay.getAbilities().entrySet()) {
+
+                String ability = entry.getKey();
+                double chance = entry.getValue();
+                if (RandomHelper.getRandomChance(chance)) {
+
+                    pokemon.setAbility(AbilityRegistry.getAbility(ability));
+                    break;
+
+                }
+
+            }
+
+        }
 
         return pokemon;
 
@@ -158,6 +175,7 @@ public class CommunityDayHandler {
 
         activeCommunityDays = new HashMap<>();
         communityDayMap = new HashMap<>();
+        boolean needsSaving = false;
         for (int i = 0; i < ConfigGetters.communityDays.size(); i++) {
 
             String name = ConfigGetters.communityDays.get(i).replace(".conf", "");
@@ -169,7 +187,20 @@ public class CommunityDayHandler {
                 endTime[e] = Integer.parseInt(end[e]);
 
             }
-            String[] start = BetterCommunityDays.communityDayManager.getConfigNode(i, "Event-Data", "Start-Time").getString().split(", ");
+            String[] start;// = BetterCommunityDays.communityDayManager.getConfigNode(i, "Event-Data", "Start-Time").getString().split(", ");
+            if (!BetterCommunityDays.communityDayManager.getConfigNode(i, "Event-Data", "Start-Time").isVirtual()) {
+
+                start = BetterCommunityDays.communityDayManager.getConfigNode(i, "Event-Data", "Start-Time").getString().split(", ");
+                String string = BetterCommunityDays.communityDayManager.getConfigNode(i, "Event-Data", "Start-Time").getString();
+                BetterCommunityDays.communityDayManager.getConfigNode(i, "Event-Data", "Start-Time").setValue(null);
+                BetterCommunityDays.communityDayManager.getConfigNode(i, "Event-Data", "Begin-Time").setValue(string);
+                needsSaving = true;
+
+            } else {
+
+                start = BetterCommunityDays.communityDayManager.getConfigNode(i, "Event-Data", "Begin-Time").getString().split(", ");
+
+            }
             int[] startTime = new int[start.length];
             for (int s = 0; s < start.length; s++) {
 
@@ -181,7 +212,29 @@ public class CommunityDayHandler {
             List<String> guiLore = BetterCommunityDays.communityDayManager.getConfigNode(i, "GUI-Data", "Lore").getList(TypeToken.of(String.class));
             String guiRepresentationSpecies = BetterCommunityDays.communityDayManager.getConfigNode(i, "GUI-Data", "Representation-Species").getString();
 
+            Map<String, Double> abilities = new HashMap<>();
+            if (BetterCommunityDays.communityDayManager.getConfigNode(i, "Pokemon-Data", "Abilities").isVirtual()) {
+
+                BetterCommunityDays.communityDayManager.getConfigNode(i, "Pokemon-Data", "Abilities").setValue(abilities);
+                if (!needsSaving) needsSaving = true;
+
+            } else {
+
+                abilities = BetterCommunityDays.communityDayManager.getConfigNode(i, "Pokemon-Data", "Abilities").getValue(new TypeToken<Map<String, Double>>() {});
+
+            }
             String form = BetterCommunityDays.communityDayManager.getConfigNode(i, "Pokemon-Data", "Form").getString();
+            double ivBoost = 0;
+            if (BetterCommunityDays.communityDayManager.getConfigNode(i, "Pokemon-Data", "IV-Boost-Percentage").isVirtual()) {
+
+                BetterCommunityDays.communityDayManager.getConfigNode(i, "Pokemon-Data", "IV-Boost-Percentage").setValue(ivBoost);
+                if (!needsSaving) needsSaving = true;
+
+            } else {
+
+                ivBoost = BetterCommunityDays.communityDayManager.getConfigNode(i, "Pokemon-Data", "IV-Boost-Percentage").getDouble();
+
+            }
             int maxLevel = BetterCommunityDays.communityDayManager.getConfigNode(i, "Pokemon-Data", "Max-Level").getInt();
             int minLevel = BetterCommunityDays.communityDayManager.getConfigNode(i, "Pokemon-Data", "Min-Level").getInt();
             Map<String, Double> specialMoves = BetterCommunityDays.communityDayManager.getConfigNode(i, "Pokemon-Data", "Moves").getValue(new TypeToken<Map<String, Double>>() {});
@@ -203,11 +256,16 @@ public class CommunityDayHandler {
             Map<String, Double> specialTextures = BetterCommunityDays.communityDayManager.getConfigNode(i, "Pokemon-Data", "Textures").getValue(new TypeToken<Map<String, Double>>() {});
             List<String> worldBlacklist = BetterCommunityDays.communityDayManager.getConfigNode(i, "World-Blacklist").getList(TypeToken.of(String.class));
 
-            CommunityDay communityDay = new CommunityDay(i, name, configured, endTime, startTime, guiDisplayName, guiLore, guiRepresentationSpecies,
-                    form, maxLevel, minLevel, specialMoves, shinyChance, spawnChance, species, specialMoveAmount, specialTextures, worldBlacklist);
+            CommunityDay communityDay = new CommunityDay(i, name, configured, endTime, startTime, guiDisplayName, guiLore, guiRepresentationSpecies, abilities,
+                    form, ivBoost, maxLevel, minLevel, specialMoves, shinyChance, spawnChance, species, specialMoveAmount, specialTextures, worldBlacklist);
 
             communityDayMap.put(name, communityDay);
             BetterCommunityDays.logger.info("Successfully created and loaded Community Day: " + name);
+
+        }
+        if (needsSaving) {
+
+            BetterCommunityDays.communityDayManager.save();
 
         }
 

@@ -59,6 +59,7 @@ public class PixelmonSpawnListener {
                 if (!cdse.isCanceled()) {
 
                     cdse.getCommunityDaySpawn().getPersistentData().putBoolean("CommunityDaySpawn", true);
+                    cdse.getCommunityDaySpawn().getPersistentData().putString("FromCommunityDay", day.getName());
                     PixelmonEntity spawnedPixelmon = cdse.getCommunityDaySpawn().getOrSpawnPixelmon(player.level, x, y, z);
                     spawnedPixelmon.setPos(x, y, z);
                     spawnedPixelmon.setSpawnLocation(spawnedPixelmon.getDefaultSpawnLocation());

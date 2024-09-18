@@ -20,7 +20,9 @@ public class CommunityDay {
     private final List<String> guiLore;
     private final String guiRepresentationSpecies;
 
+    private final Map<String, Double> abilities;
     private final String form;
+    private final double ivBoost;
     private final int maxLevel;
     private final int minLevel;
     private final Map<String, Double> specialMoves;
@@ -35,7 +37,7 @@ public class CommunityDay {
     private final Pokemon pokemonSpecies;
 
     public CommunityDay (int index, String name, boolean configured, int[] endTime, int[] startTime, String guiDisplayName, List<String> guiLore, String guiRepresentationSpecies,
-                         String form, int maxLevel, int minLevel, Map<String, Double> specialMoves, double shinyChance, double spawnChance, String species, int specialMoveAmount, Map<String, Double> specialTextures,
+                         Map<String, Double> abilities, String form, double ivBoost, int maxLevel, int minLevel, Map<String, Double> specialMoves, double shinyChance, double spawnChance, String species, int specialMoveAmount, Map<String, Double> specialTextures,
                          List<String> worldBlacklist
                          ) {
 
@@ -47,7 +49,9 @@ public class CommunityDay {
         this.guiDisplayName = guiDisplayName;
         this.guiLore = guiLore;
         this.guiRepresentationSpecies = guiRepresentationSpecies;
+        this.abilities = abilities;
         this.form = form;
+        this.ivBoost = ivBoost;
         this.maxLevel = maxLevel;
         this.minLevel = minLevel;
         this.specialMoves = specialMoves;
@@ -179,9 +183,21 @@ public class CommunityDay {
 
     }
 
+    public Map<String, Double> getAbilities() {
+
+        return this.abilities;
+
+    }
+
     public String getForm() {
 
         return this.form;
+
+    }
+
+    public double getIVBoost() {
+
+        return this.ivBoost;
 
     }
 
