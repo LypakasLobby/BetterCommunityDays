@@ -5,7 +5,6 @@ import com.lypaka.bettercommunitydays.CommunityDays.CommunityDay;
 import com.lypaka.bettercommunitydays.CommunityDays.CommunityDayHandler;
 import com.pixelmonmod.pixelmon.api.events.CaptureEvent;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
-import com.pixelmonmod.pixelmon.api.pokemon.stats.BattleStatsType;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;

@@ -3,7 +3,6 @@ package com.lypaka.bettercommunitydays.CommunityDays;
 import com.lypaka.bettercommunitydays.BetterCommunityDays;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.pokemon.PokemonBuilder;
-import com.pixelmonmod.pixelmon.api.pokemon.species.Species;
 
 import java.util.List;
 import java.util.Map;
@@ -13,6 +12,7 @@ public class CommunityDay {
     private final int index;
     private final String name;
     private boolean configured;
+    private final List<String> biomeBlacklist;
     private final int[] endTime;
     private final int[] startTime;
 
@@ -32,19 +32,20 @@ public class CommunityDay {
     private final String species;
     private final int specialMoveAmount;
     private final Map<String, Double> specialTextures;
+    private final Map<String, String> spawnManagerAreas;
     private final List<String> worldBlacklist;
 
     private boolean active;
     private final Pokemon pokemonSpecies;
 
-    public CommunityDay (int index, String name, boolean configured, int[] endTime, int[] startTime, String guiDisplayName, List<String> guiLore, String guiRepresentationSpecies,
+    public CommunityDay (int index, String name, boolean configured, List<String> biomeBlacklist, int[] endTime, int[] startTime, String guiDisplayName, List<String> guiLore, String guiRepresentationSpecies,
                          Map<String, Double> abilities, String flag, String form, double ivBoost, int maxLevel, int minLevel, Map<String, Double> specialMoves, double shinyChance, double spawnChance, String species, int specialMoveAmount, Map<String, Double> specialTextures,
-                         List<String> worldBlacklist
-                         ) {
+                         Map<String, String> spawnManagerAreas, List<String> worldBlacklist) {
 
         this.index = index;
         this.name = name;
         this.configured = configured;
+        this.biomeBlacklist = biomeBlacklist;
         this.endTime = endTime;
         this.startTime = startTime;
         this.guiDisplayName = guiDisplayName;
@@ -62,6 +63,7 @@ public class CommunityDay {
         this.species = species;
         this.specialMoveAmount = specialMoveAmount;
         this.specialTextures = specialTextures;
+        this.spawnManagerAreas = spawnManagerAreas;
         this.worldBlacklist = worldBlacklist;
 
         this.active = false;
@@ -92,6 +94,12 @@ public class CommunityDay {
 
         BetterCommunityDays.communityDayManager.getConfigNode(this.index, "Event-Data", "Configured").setValue(this.configured);
         BetterCommunityDays.communityDayManager.save();
+
+    }
+
+    public List<String> getBiomeBlacklist() {
+
+        return this.biomeBlacklist;
 
     }
 
@@ -254,6 +262,12 @@ public class CommunityDay {
     public Map<String, Double> getSpecialTextures() {
 
         return this.specialTextures;
+
+    }
+
+    public Map<String, String> getSpawnManagerAreas() {
+
+        return this.spawnManagerAreas;
 
     }
 

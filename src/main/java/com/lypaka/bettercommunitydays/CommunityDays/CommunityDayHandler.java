@@ -4,14 +4,13 @@ import com.google.common.reflect.TypeToken;
 import com.lypaka.bettercommunitydays.BetterCommunityDays;
 import com.lypaka.bettercommunitydays.ConfigGetters;
 import com.lypaka.lypakautils.MiscHandlers.PixelmonHelpers;
-import com.pixelmonmod.api.Flags;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.pokemon.PokemonBuilder;
 import com.pixelmonmod.pixelmon.api.pokemon.ability.AbilityRegistry;
 import com.pixelmonmod.pixelmon.api.util.helpers.RandomHelper;
 import com.pixelmonmod.pixelmon.battles.attacks.Attack;
 import com.pixelmonmod.pixelmon.battles.attacks.ImmutableAttack;
-import com.pixelmonmod.pixelmon.client.gui.starter.ChooseStarterScreen;
+import net.minecraftforge.fml.ModList;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 
 import java.util.ArrayList;
@@ -37,7 +36,11 @@ public class CommunityDayHandler {
 
                 if (dexNums.contains(day.getPokemonDexNumber())) {
 
-                    if (!days.contains(day)) days.add(day);
+                    if (day.getBiomeBlacklist().isEmpty() || !day.getBiomeBlacklist().contains(biome)) {
+
+                        if (!days.contains(day)) days.add(day);
+
+                    }
 
                 }
 
@@ -188,6 +191,18 @@ public class CommunityDayHandler {
 
             String name = ConfigGetters.communityDays.get(i).replace(".conf", "");
             boolean configured = BetterCommunityDays.communityDayManager.getConfigNode(i, "Event-Data", "Configured").getBoolean();
+            List<String> biomeBlacklist = new ArrayList<>();
+            if (BetterCommunityDays.communityDayManager.getConfigNode(i, "Biome-Blacklist").isVirtual()) {
+
+                if (!needsSaving) needsSaving = true;
+                BetterCommunityDays.communityDayManager.getConfigNode(i, "Biome-Blacklist").setComment("Implements a biome blacklist in the event you don't want a certain biome to be affect by Community Day spawns for whatever reason");
+                BetterCommunityDays.communityDayManager.getConfigNode(i, "Biome-Blacklist").setValue(biomeBlacklist);
+
+            } else {
+
+                biomeBlacklist = BetterCommunityDays.communityDayManager.getConfigNode(i, "Biome-Blacklist").getList(TypeToken.of(String.class));
+
+            }
             String[] end = BetterCommunityDays.communityDayManager.getConfigNode(i, "Event-Data", "End-Time").getString().split(", ");
             int[] endTime = new int[end.length];
             for (int e = 0; e < end.length; e++) {
@@ -195,7 +210,7 @@ public class CommunityDayHandler {
                 endTime[e] = Integer.parseInt(end[e]);
 
             }
-            String[] start;// = BetterCommunityDays.communityDayManager.getConfigNode(i, "Event-Data", "Start-Time").getString().split(", ");
+            String[] start;
             if (!BetterCommunityDays.communityDayManager.getConfigNode(i, "Event-Data", "Start-Time").isVirtual()) {
 
                 start = BetterCommunityDays.communityDayManager.getConfigNode(i, "Event-Data", "Start-Time").getString().split(", ");
@@ -274,10 +289,37 @@ public class CommunityDayHandler {
             String species = BetterCommunityDays.communityDayManager.getConfigNode(i, "Pokemon-Data", "Species").getString();
             int specialMoveAmount = BetterCommunityDays.communityDayManager.getConfigNode(i, "Pokemon-Data", "Special-Move-Amount").getInt();
             Map<String, Double> specialTextures = BetterCommunityDays.communityDayManager.getConfigNode(i, "Pokemon-Data", "Textures").getValue(new TypeToken<Map<String, Double>>() {});
+            Map<String, String> spawnManagerAreas = new HashMap<>();
+            if (BetterCommunityDays.communityDayManager.getConfigNode(i, "Spawn-Manager-Areas").isVirtual()) {
+
+                if (!needsSaving) needsSaving = true;
+                BetterCommunityDays.communityDayManager.getConfigNode(i, "Spawn-Manager-Areas").setComment("If using my SpawnManager mod, sets what areas this Community Day is active in (and what spawners this Community Day can be triggered from). Example: \"areaName\"=\"grass, natural\"");
+                BetterCommunityDays.communityDayManager.getConfigNode(i, "Spawn-Manager-Areas").setValue(spawnManagerAreas);
+
+            } else {
+
+                spawnManagerAreas = BetterCommunityDays.communityDayManager.getConfigNode(i, "Spawn-Manager-Areas").getValue(new TypeToken<Map<String, String>>() {});
+                if (!ModList.get().isLoaded("spawnmanager")) {
+
+                    if (spawnManagerAreas != null && !spawnManagerAreas.isEmpty()) {
+
+                        BetterCommunityDays.logger.error("Could not detect SpawnManager, but Community Day: " + name + " is set to use SpawnManager areas!");
+                        BetterCommunityDays.logger.error("Without SpawnManager installed, this won't work!");
+                        spawnManagerAreas = new HashMap<>();
+
+                    }
+
+                } else {
+
+                    spawnManagerAreas = BetterCommunityDays.communityDayManager.getConfigNode(i, "Spawn-Manager-Areas").getValue(new TypeToken<Map<String, String>>() {});
+
+                }
+
+            }
             List<String> worldBlacklist = BetterCommunityDays.communityDayManager.getConfigNode(i, "World-Blacklist").getList(TypeToken.of(String.class));
 
-            CommunityDay communityDay = new CommunityDay(i, name, configured, endTime, startTime, guiDisplayName, guiLore, guiRepresentationSpecies, abilities,
-                    flag, form, ivBoost, maxLevel, minLevel, specialMoves, shinyChance, spawnChance, species, specialMoveAmount, specialTextures, worldBlacklist);
+            CommunityDay communityDay = new CommunityDay(i, name, configured, biomeBlacklist, endTime, startTime, guiDisplayName, guiLore, guiRepresentationSpecies, abilities,
+                    flag, form, ivBoost, maxLevel, minLevel, specialMoves, shinyChance, spawnChance, species, specialMoveAmount, specialTextures, spawnManagerAreas, worldBlacklist);
 
             communityDayMap.put(name, communityDay);
             BetterCommunityDays.logger.info("Successfully created and loaded Community Day: " + name);
